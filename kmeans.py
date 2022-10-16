@@ -1,9 +1,12 @@
 """kmeans.py"""
+from random import seed
+seed(25)
 from dis import dis
 from operator import index
-import random
+from random import randint
 from functools import reduce
 from math import sqrt
+
 
 class Cluster:
     """This class represents the clusters, it contains the
@@ -25,7 +28,7 @@ class KMeans:
         self.dim = dim
 
         # Threshold above which the corresponding html is prefetched
-        self.prefetch_threshold = 0.3
+        self.prefetch_threshold = 0.5
         # An initialized list of k clusters
         self.clusters = [Cluster(dim) for _ in range(k)]
 
@@ -34,12 +37,12 @@ class KMeans:
         self.hitrate = 0
 
     def train(self):
-        random.seed(10)
+        # random.seed(10)
 
         # Init
         for i in range(self.k): 
-            self.clusters[i].current_members.add(random.randint(0, len(self.testdata) - 1))
-            self.clusters[i].prototype = self.testdata[random.randint(0, len(self.testdata) - 1)]
+            self.clusters[i].current_members.add(randint(0, len(self.testdata) - 1))
+            self.clusters[i].prototype = self.testdata[randint(0, len(self.testdata) - 1)]
 
         # Assign members to clusters
         for l, i in enumerate(self.testdata):
