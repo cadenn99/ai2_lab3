@@ -51,8 +51,6 @@ class Kohonen:
             # Clear current members
             for i in chain.from_iterable(self.clusters): i.current_members.clear()
 
-            # idx, i = self.random_vector()
-            # shuffle(self.traindata)
             for idx, i in enumerate(self.traindata):
 
                 # Find bmu_node
