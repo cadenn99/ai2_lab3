@@ -1,13 +1,8 @@
-from operator import index
-from random import seed
-seed(25)
-from random import randint
-from random import random
+from random import randint, random
 from math import sqrt
 from functools import reduce
 from itertools import chain
-import matplotlib.pyplot as plt
-
+from statistics import mean
 
 
 class Cluster:
@@ -29,7 +24,7 @@ class Kohonen:
         # A 2-dimensional list of clusters. Size == N x N
         self.clusters = [[Cluster(dim) for _ in range(n)] for _ in range(n)]
         # Threshold above which the corresponding html is prefetched
-        self.prefetch_threshold = 0.5
+        self.prefetch_threshold = 0.35
         self.initial_learning_rate = 0.8
         # The accuracy and hitrate are the performance metrics (i.e. the results)
         self.accuracy = 0
@@ -57,24 +52,20 @@ class Kohonen:
                 bmu_node = list(chain.from_iterable(self.clusters))[index_shortest]
                 bmu_node.current_members.add(idx)
 
-                # Update bmu_node
-                bmu_node.prototype = [(1 - self.initial_learning_rate) * j + self.initial_learning_rate * i[idx2] for idx2, j in enumerate(bmu_node.prototype)]
-
-                # Find neighboring nodes of bmu_node
+                # Find neighborhood + bmu_node itself
                 neighborhood = []
-                neighborhood_r = (self.n / 2) * (1 - epoch_count / self.epochs)
+                neighborhood_r = (self.n / 2) * (1 - (epoch_count / self.epochs ))
                 for node in list(chain.from_iterable(self.clusters)):
                     node_to_bmu = sqrt(reduce(lambda a, b: a + b, [pow(k - node.prototype[idx], 2) for idx, k in enumerate(bmu_node.prototype)]))
-                    if node_to_bmu < neighborhood_r and node is not bmu_node:
+                    if node_to_bmu < neighborhood_r:
                         neighborhood.append(node)           
                 
-
                 # Update neighborhood
                 for node in neighborhood:
-                    node.prototype = [(1 - self.initial_learning_rate) * j + self.initial_learning_rate * bmu_node.prototype[idx] for idx, j in enumerate(node.prototype)]
-
-                # Update learning rate
-                self.initial_learning_rate = self.initial_learning_rate * (1 - epoch_count / self.epochs)
+                    node.prototype = [(1 - self.initial_learning_rate) * j + self.initial_learning_rate * i[idx2] for idx2, j in enumerate(node.prototype)]
+            
+            # Update learning rate
+            self.initial_learning_rate = 0.8 * (1 - (epoch_count / self.epochs))
             self.log_progess(epoch_count + 1)
 
     def test(self):

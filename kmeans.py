@@ -1,6 +1,4 @@
 """kmeans.py"""
-from random import seed
-seed(25)
 from dis import dis
 from operator import index
 from random import randint
@@ -28,7 +26,7 @@ class KMeans:
         self.dim = dim
 
         # Threshold above which the corresponding html is prefetched
-        self.prefetch_threshold = 0.5
+        self.prefetch_threshold = 0.25
         # An initialized list of k clusters
         self.clusters = [Cluster(dim) for _ in range(k)]
 
@@ -82,7 +80,7 @@ class KMeans:
                     prefetched_count += reduce(lambda a, b: a + b, pre_fetched)
         self.hitrate = hit_count / request_count
         self.accuracy = hit_count / prefetched_count
-
+        self.print_test()
 
     def print_test(self):
         print("Prefetch threshold =", self.prefetch_threshold)
