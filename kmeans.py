@@ -18,6 +18,7 @@ class Cluster:
         self.current_members = set()
         self.previous_members = set()
 
+
 class KMeans:
     def __init__(self, k, traindata, testdata, dim):
         self.k = k
@@ -38,27 +39,30 @@ class KMeans:
         # random.seed(10)
 
         # Init
-        for i in range(self.k): 
+        for i in range(self.k):
             self.clusters[i].current_members.add(randint(0, len(self.testdata) - 1))
             self.clusters[i].prototype = self.testdata[randint(0, len(self.testdata) - 1)]
 
         # Assign members to clusters
         for l, i in enumerate(self.testdata):
-            distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for j in self.clusters]
+            distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for
+                         j in self.clusters]
             index_shortest = distances.index(min(distances))
             self.clusters[index_shortest].current_members.add(l)
 
         optimizing = True
 
         # Update cluster prototype and cluster members
-        while(optimizing):
+        while optimizing:
             for i in self.clusters:
-                i.prototype = [reduce(lambda a, b: a + b, [self.testdata[k][j] for k in i.current_members]) / len(i.current_members) for j in range(self.dim)]
+                i.prototype = [reduce(lambda a, b: a + b, [self.testdata[k][j] for k in i.current_members]) / len(
+                    i.current_members) for j in range(self.dim)]
                 i.previous_members = i.current_members
                 i.current_members.clear()
 
             for l, i in enumerate(self.testdata):
-                distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for j in self.clusters]
+                distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)]))
+                             for j in self.clusters]
                 index_shortest = distances.index(min(distances))
                 self.clusters[index_shortest].current_members.add(l)
 
@@ -75,7 +79,9 @@ class KMeans:
             for i in self.clusters:
                 pre_fetched = [1 if j >= self.prefetch_threshold else 0 for j in i.prototype]
                 if client_id in i.current_members:
-                    hit_count += reduce(lambda a, b: a + b, [1 if self.testdata[client_id][idx] == 1 and k == 1 else 0 for idx, k in enumerate(pre_fetched)])
+                    hit_count += reduce(lambda a, b: a + b,
+                                        [1 if self.testdata[client_id][idx] == 1 and k == 1 else 0 for idx, k in
+                                         enumerate(pre_fetched)])
                     request_count += reduce(lambda a, b: a + b, self.testdata[client_id])
                     prefetched_count += reduce(lambda a, b: a + b, pre_fetched)
         self.hitrate = hit_count / request_count
@@ -86,15 +92,15 @@ class KMeans:
         print("Prefetch threshold =", self.prefetch_threshold)
         print("Hitrate:", self.hitrate)
         print("Accuracy:", self.accuracy)
-        print("Hitrate+Accuracy =", self.hitrate+self.accuracy)
+        print("Hitrate+Accuracy =", self.hitrate + self.accuracy)
         print()
 
     def print_members(self):
         for i, cluster in enumerate(self.clusters):
-            print("Members cluster["+str(i)+"] :", cluster.current_members)
+            print("Members cluster[" + str(i) + "] :", cluster.current_members)
             print()
 
     def print_prototypes(self):
         for i, cluster in enumerate(self.clusters):
-            print("Prototype cluster["+str(i)+"] :", cluster.prototype)
+            print("Prototype cluster[" + str(i) + "] :", cluster.prototype)
             print()
