@@ -6,11 +6,13 @@ import sys
 from kmeans import KMeans
 from kohonen import Kohonen
 
+
 def main():
     if len(sys.argv) == 5:
         train, test, requests, clients, dim = read_data(*sys.argv[1:])
     else:
-        print("No files where defined (python run_clustering.py [traindata, testdata, requests, clients]), using defaults")
+        print(
+            "No files where defined (python run_clustering.py [traindata, testdata, requests, clients]), using defaults")
         train, test, requests, clients, dim = read_data()
 
     clustering_algorithm = None
@@ -19,7 +21,7 @@ def main():
             algorithm = int(input("Run K-means (1), Kohonen SOM (2) or Quit(3) ? "))
         except ValueError:
             continue
-            
+
         if algorithm == 1:
             clustering_algorithm = kmeans_init(train, test, dim)
         elif algorithm == 2:
@@ -43,7 +45,9 @@ def main():
 
         while True:
             try:
-                output = int(input("Show output print_test(1), vector members(2), vector prototypes(3), Quit(4) or set prefetch threshold(5)? "))
+                output = int(input(
+                    "Show output print_test(1), vector members(2), vector prototypes(3), Quit(4) or set prefetch "
+                    "threshold(5)? "))
             except ValueError:
                 continue
 
@@ -66,6 +70,7 @@ def main():
                     print("ERROR while setting prefetch threshold: ", e)
                     exit()
 
+
 def read_data(train_filename="train.dat", test_filename="test.dat",
               requests_filename="requests.dat", clients_filename="clients.dat"):
     train, dim = read_train(train_filename)
@@ -74,10 +79,12 @@ def read_data(train_filename="train.dat", test_filename="test.dat",
     clients = read_clients(clients_filename)
 
     if dim != len(requests):
-        print("ERROR: the number of dimensions in the training data does not match the number of requests in " + requests_filename)
+        print(
+            "ERROR: the number of dimensions in the training data does not match the number of requests in " + requests_filename)
         exit()
 
     return train, test, requests, clients, dim
+
 
 def read_train(filename):
     train_data = []
@@ -88,7 +95,7 @@ def read_train(filename):
     except Exception as e:
         print("Error while reading train data: ", e)
         exit()
-        
+
     dim = 0
     for data in train_data:
         if dim == 0:
@@ -99,6 +106,7 @@ def read_train(filename):
                 exit()
 
     return train_data, dim
+
 
 def read_test(filename, dim):
     test_data = []
@@ -117,6 +125,7 @@ def read_test(filename, dim):
 
     return test_data
 
+
 def read_requests(filename):
     request_data = []
     try:
@@ -126,8 +135,9 @@ def read_requests(filename):
     except Exception as e:
         print("Error while reading requests data: ", e)
         exit()
-        
+
     return request_data
+
 
 def read_clients(filename):
     clients = []
@@ -138,8 +148,9 @@ def read_clients(filename):
     except Exception as e:
         print("Error while reading clients data: ", e)
         exit()
-        
+
     return clients
+
 
 def kmeans_init(train, test, dim):
     k = None
@@ -149,6 +160,7 @@ def kmeans_init(train, test, dim):
             return KMeans(k, train, test, dim)
         except Exception as e:
             print("ERROR while trying to initialize KMeans: ", e)
+
 
 def kohonen_init(train, test, dim):
     n = None

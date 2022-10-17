@@ -40,7 +40,7 @@ class Kohonen:
         vector = self.traindata[index]
         return index, vector
 
-    def log_progess(self, current_epoch):
+    def log_progress(self, current_epoch):
         single_bar = round(1 / self.epochs, 2)
         bar_count = round(current_epoch * single_bar * 50)
         if current_epoch == self.epochs:
@@ -77,7 +77,7 @@ class Kohonen:
 
             # Update learning rate
             self.initial_learning_rate = 0.8 * (1 - (epoch_count / self.epochs))
-            self.log_progess(epoch_count + 1)
+            self.log_progress(epoch_count + 1)
 
     def test(self):
         hit_count = 0

@@ -28,10 +28,11 @@ class Kohonen:
     def train(self):
         # Step 1: initialize map with random vectors (A good place to do this, is in the initialisation of the clusters)
         # Repeat 'epochs' times:
-        #     Step 2: Calculate the square size and the learning rate, these decrease linearly with the number of epochs.
+        #     Step 2: Calculate the square size and the learning rate, these decrease linearly with the number of epochs
         #     Step 3: Every input vector is presented to the map (always in the same order)
         #     For each vector its Best Matching Unit is found, and :
-        #         Step 4: All nodes within the neighbourhood of the BMU are changed, you don't have to use distance relative learning.
+        #         Step 4: All nodes within the neighbourhood of the BMU are changed, you don't have to use distance
+        #         relative learning.
         # Since training kohonen maps can take quite a while, presenting the user with a progress bar would be nice
         pass
 
