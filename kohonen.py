@@ -3,15 +3,16 @@ from math import sqrt
 from functools import reduce
 from itertools import chain
 from statistics import mean
-
+import matplotlib.pyplot as plt
 
 class Cluster:
     """This class represents the clusters, it contains the
     prototype and a set with the ID's (which are Integer objects) 
     of the datapoints that are member of that cluster."""
-    def __init__(self, dim):
+    def __init__(self, dim, x, y):
         self.prototype = [random() for _ in range(dim)]
         self.current_members = set()
+        self.location = [x, y]
 
 class Kohonen:
     def __init__(self, n, epochs, traindata, testdata, dim):
@@ -22,10 +23,10 @@ class Kohonen:
         self.dim = dim
 
         # A 2-dimensional list of clusters. Size == N x N
-        self.clusters = [[Cluster(dim) for _ in range(n)] for _ in range(n)]
+        self.clusters = [[Cluster(dim, i, j) for i in range(n)] for j in range(n)]
         # Threshold above which the corresponding html is prefetched
         self.prefetch_threshold = 0.35
-        self.initial_learning_rate = 0.8
+        self.initial_learning_rate = 0.9
         # The accuracy and hitrate are the performance metrics (i.e. the results)
         self.accuracy = 0
         self.hitrate = 0
@@ -37,6 +38,11 @@ class Kohonen:
             print('[' + int(bar_count) * '=' + '>' + '.' * int(50 - bar_count) + f'] {current_epoch} / {self.epochs}', end="\n")
         else:
             print('[' + int(bar_count) * '=' + '>' + '.' * int(50 - bar_count) + f'] {current_epoch} / {self.epochs}', end="\r")
+
+    def graph_output(self):
+        data = [[len(j.current_members) for j in i] for i in self.clusters]
+        plt.imshow(data, cmap='hot', interpolation='nearest')
+        plt.show()
 
     def train(self):
         for epoch_count in range(self.epochs):
@@ -54,19 +60,21 @@ class Kohonen:
 
                 # Find neighborhood + bmu_node itself
                 neighborhood = []
-                neighborhood_r = (self.n / 2) * (1 - (epoch_count / self.epochs ))
+                neighborhood_r = (self.n / 2) * (1 - epoch_count / self.epochs )
                 for node in list(chain.from_iterable(self.clusters)):
-                    node_to_bmu = sqrt(reduce(lambda a, b: a + b, [pow(k - node.prototype[idx], 2) for idx, k in enumerate(bmu_node.prototype)]))
-                    if node_to_bmu < neighborhood_r:
+                    node_to_bmu = sqrt(reduce(lambda a, b: a + b, [pow(k - node.location[idx], 2) for idx, k in enumerate(bmu_node.location)]))
+                    if node_to_bmu <= neighborhood_r:
                         neighborhood.append(node)           
                 
                 # Update neighborhood
                 for node in neighborhood:
                     node.prototype = [(1 - self.initial_learning_rate) * j + self.initial_learning_rate * i[idx2] for idx2, j in enumerate(node.prototype)]
-            
+
+
             # Update learning rate
             self.initial_learning_rate = 0.8 * (1 - (epoch_count / self.epochs))
             self.log_progess(epoch_count + 1)
+        self.graph_output()
 
     def test(self):
         hit_count = 0
