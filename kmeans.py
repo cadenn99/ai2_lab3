@@ -39,11 +39,14 @@ class KMeans:
         # random.seed(10)
 
         # Init
+        # Creation of random clusters with weights from a random partition of the test.dat file
         for i in range(self.k):
             self.clusters[i].current_members.add(randint(0, len(self.testdata) - 1))
             self.clusters[i].prototype = self.testdata[randint(0, len(self.testdata) - 1)]
 
         # Assign members to clusters
+        # Looping through calculating the Euclidean distance for each client and assigning each client to the cluster
+        # with the closest Euclidean distance.
         for l, i in enumerate(self.testdata):
             distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for
                          j in self.clusters]
@@ -54,18 +57,21 @@ class KMeans:
 
         # Update cluster prototype and cluster members
         while optimizing:
+            # Finding the new cluster center and clearing all the members from the cluster
             for i in self.clusters:
                 i.prototype = [reduce(lambda a, b: a + b, [self.testdata[k][j] for k in i.current_members]) / len(
                     i.current_members) for j in range(self.dim)]
                 i.previous_members = i.current_members
                 i.current_members.clear()
 
+            # Reassigning all the members to the closest cluster center
             for l, i in enumerate(self.testdata):
                 distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)]))
                              for j in self.clusters]
                 index_shortest = distances.index(min(distances))
                 self.clusters[index_shortest].current_members.add(l)
 
+            # Checks if the current members and previous members are the same, then a stable point has been found
             for i in self.clusters:
                 if i.current_members == i.previous_members:
                     optimizing = False
@@ -75,6 +81,9 @@ class KMeans:
         hit_count = 0
         request_count = 0
         prefetched_count = 0
+        # Looping through all the clients in the test data and checking which cluster a client belongs to.
+        # Calculating the hit count, request count and prefetched count. Which can be used to calculate the hitrate
+        # and accuracy.
         for client_id, _ in enumerate(self.testdata):
             for i in self.clusters:
                 pre_fetched = [1 if j >= self.prefetch_threshold else 0 for j in i.prototype]
