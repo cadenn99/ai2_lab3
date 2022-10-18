@@ -31,7 +31,7 @@ class KMeans:
         self.dim = dim
 
         # Threshold above which the corresponding html is prefetched
-        self.prefetch_threshold = 0.25
+        self.prefetch_threshold = 0.5
         # An initialized list of k clusters
         self.clusters = [Cluster(dim) for _ in range(k)]
 
@@ -40,7 +40,6 @@ class KMeans:
         self.hitrate = 0
 
     def train(self):
-        # random.seed(10)
 
         # Init
         # Creation of random clusters with weights from a random partition of the test.dat file
