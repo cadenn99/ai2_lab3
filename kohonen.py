@@ -32,7 +32,7 @@ class Kohonen:
         # A 2-dimensional list of clusters. Size == N x N
         self.clusters = [[Cluster(dim, i, j) for i in range(n)] for j in range(n)]
         # Threshold above which the corresponding html is prefetched
-        self.prefetch_threshold = 0.35
+        self.prefetch_threshold = 0.5
         self.initial_learning_rate = 0.9
         # The accuracy and hitrate are the performance metrics (i.e. the results)
         self.accuracy = 0
