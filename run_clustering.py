@@ -1,5 +1,5 @@
-"""run_clustering.py -- the main program that does the data IO (by reading 
-the 4 data files),handles the cmd line interaction with the programmer 
+"""run_clustering.py -- the main program that does the data IO (by reading
+the 4 data files),handles the cmd line interaction with the programmer
 and calls three clustering methods."""
 
 import sys

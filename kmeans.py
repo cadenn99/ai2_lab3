@@ -1,3 +1,7 @@
+## Caden Kamminga (s4370732)
+## Tex McGinley (s4299035)
+## Daniel Gentile (s4273389)
+
 """kmeans.py"""
 from dis import dis
 from operator import index
@@ -59,15 +63,13 @@ class KMeans:
         while optimizing:
             # Finding the new cluster center and clearing all the members from the cluster
             for i in self.clusters:
-                i.prototype = [reduce(lambda a, b: a + b, [self.testdata[k][j] for k in i.current_members]) / len(
-                    i.current_members) for j in range(self.dim)]
+                i.prototype = [reduce(lambda a, b: a + b, [self.testdata[k][j] for k in i.current_members]) / len(i.current_members) for j in range(self.dim)]
                 i.previous_members = i.current_members
                 i.current_members.clear()
 
             # Reassigning all the members to the closest cluster center
             for l, i in enumerate(self.testdata):
-                distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)]))
-                             for j in self.clusters]
+                distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)]))for j in self.clusters]
                 index_shortest = distances.index(min(distances))
                 self.clusters[index_shortest].current_members.add(l)
 
@@ -86,11 +88,10 @@ class KMeans:
         # and accuracy.
         for client_id, _ in enumerate(self.testdata):
             for i in self.clusters:
+                print(i.prototype)
                 pre_fetched = [1 if j >= self.prefetch_threshold else 0 for j in i.prototype]
                 if client_id in i.current_members:
-                    hit_count += reduce(lambda a, b: a + b,
-                                        [1 if self.testdata[client_id][idx] == 1 and k == 1 else 0 for idx, k in
-                                         enumerate(pre_fetched)])
+                    hit_count += reduce(lambda a, b: a + b, [1 if self.testdata[client_id][idx] == 1 and k == 1 else 0 for idx, k in enumerate(pre_fetched)])
                     request_count += reduce(lambda a, b: a + b, self.testdata[client_id])
                     prefetched_count += reduce(lambda a, b: a + b, pre_fetched)
         self.hitrate = hit_count / request_count
