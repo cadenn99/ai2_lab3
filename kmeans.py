@@ -3,12 +3,10 @@
 ## Daniel Gentile (s4273389)
 
 """kmeans.py"""
-from dis import dis
-from operator import index
 from random import randint
 from functools import reduce
 from math import sqrt
-
+from random import shuffle
 
 class Cluster:
     """This class represents the clusters, it contains the
@@ -43,16 +41,18 @@ class KMeans:
 
         # Init
         # Creation of random clusters with weights from a random partition of the test.dat file
+        random_indexes = [i for i in range(len(self.testdata))]
+        shuffle(random_indexes)
         for i in range(self.k):
-            self.clusters[i].current_members.add(randint(0, len(self.testdata) - 1))
-            self.clusters[i].prototype = self.testdata[randint(0, len(self.testdata) - 1)]
+            member = random_indexes.pop(1)
+            self.clusters[i].current_members.add(member)
+            self.clusters[i].prototype = self.testdata[member]
 
         # Assign members to clusters
         # Looping through calculating the Euclidean distance for each client and assigning each client to the cluster
         # with the closest Euclidean distance.
         for l, i in enumerate(self.testdata):
-            distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for
-                         j in self.clusters]
+            distances = [sqrt(reduce(lambda a, b: a + b, [pow(k - j.prototype[idx], 2) for idx, k in enumerate(i)])) for j in self.clusters]
             index_shortest = distances.index(min(distances))
             self.clusters[index_shortest].current_members.add(l)
 
@@ -87,7 +87,6 @@ class KMeans:
         # and accuracy.
         for client_id, _ in enumerate(self.testdata):
             for i in self.clusters:
-                print(i.prototype)
                 pre_fetched = [1 if j >= self.prefetch_threshold else 0 for j in i.prototype]
                 if client_id in i.current_members:
                     hit_count += reduce(lambda a, b: a + b, [1 if self.testdata[client_id][idx] == 1 and k == 1 else 0 for idx, k in enumerate(pre_fetched)])
@@ -95,7 +94,6 @@ class KMeans:
                     prefetched_count += reduce(lambda a, b: a + b, pre_fetched)
         self.hitrate = hit_count / request_count
         self.accuracy = hit_count / prefetched_count
-        self.print_test()
 
     def print_test(self):
         print("Prefetch threshold =", self.prefetch_threshold)
